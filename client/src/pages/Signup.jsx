@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import React from "react";
 import http from "../api/http";
+import styles from "./Auth.module.css";
 
 export default function Signup() {
   const nav = useNavigate();
@@ -22,29 +22,53 @@ export default function Signup() {
   }
 
   return (
-    <div className="card">
-      <h2>Create account</h2>
-      <form onSubmit={onSubmit} className="form">
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          required
-        />
-        <input
-          placeholder="Password (min 8)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          required
-        />
-        {error && <p className="error">{String(error)}</p>}
-        <button type="submit">Create account</button>
-      </form>
-      <p>
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
+    <div className={styles.authContainer}>
+      <div className={styles.authCard}>
+        <div className={styles.logoContainer}>
+          <div className={styles.logoIcon}>✓</div>
+          <div className={styles.logoText}>Smart Tasks</div>
+        </div>
+        
+        <div className={styles.authHeader}>
+          <h1 className={styles.authTitle}>Get started</h1>
+          <p className={styles.authSubtitle}>Create your account to begin organizing</p>
+        </div>
+        
+        <form onSubmit={onSubmit} className={styles.authForm}>
+          <div className={styles.inputGroup}>
+            <input
+              className={styles.input}
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <input
+              className={styles.input}
+              placeholder="Password (minimum 8 characters)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              minLength={8}
+            />
+          </div>
+          
+          {error && <p className={styles.error}>{String(error)}</p>}
+          
+          <button type="submit" className={styles.submitButton}>
+            Create Account
+          </button>
+        </form>
+        
+        <div className={styles.authFooter}>
+          Already have an account? <Link to="/login" className={styles.authLink}>Sign in</Link>
+        </div>
+      </div>
     </div>
   );
 }

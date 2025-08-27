@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
+import styles from "../components/Toolbar.module.css";
 import {
   DndContext,
   closestCenter,
@@ -82,21 +83,24 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className="toolbar">
-        <div className="filters">
+      <div className={styles.toolbar}>
+        <div className={styles.filters}>
           {FILTERS.map((f) => (
             <button
               key={f}
-              className={f === filter ? "active" : ""}
+              className={`${styles.filterButton} ${f === filter ? styles.filterButtonActive : ""}`}
               onClick={() => setFilter(f)}
             >
               {f}
             </button>
           ))}
         </div>
-        <Link to="/tasks/new" className="primary">
-          + New Task
-        </Link>
+        <div className={styles.actions}>
+          <Link to="/tasks/new" className={styles.newTaskButton}>
+            <span className={styles.newTaskIcon}>+</span>
+            New Task
+          </Link>
+        </div>
       </div>
 
       <SmartReminder summary={summary} onApply={applySuggested} />

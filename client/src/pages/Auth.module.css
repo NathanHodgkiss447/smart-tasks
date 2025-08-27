@@ -1,0 +1,250 @@
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--bg) 0%, #0f0f18 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.authContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(110, 168, 254, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(110, 254, 185, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255, 107, 107, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.splashScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeOut 1s ease-in-out 2s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.splashLogo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: splashAnimation 2s ease-in-out;
+}
+
+@keyframes splashAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.splashIcon {
+  width: 80px;
+  height: 80px;
+  background: var(--accent);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: black;
+  font-weight: bold;
+  box-shadow: 0 10px 40px rgba(110, 168, 254, 0.3);
+}
+
+.splashTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0;
+}
+
+.splashSubtitle {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.authCard {
+  background: rgba(22, 22, 29, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(36, 36, 51, 0.8);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(110, 168, 254, 0.05);
+  animation: slideInUp 0.6s ease-out 2.5s both;
+  position: relative;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.authTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0 0 8px 0;
+}
+
+.authSubtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(15, 15, 21, 0.8);
+  border: 1px solid rgba(42, 42, 55, 0.6);
+  border-radius: 12px;
+  color: var(--fg);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.1);
+  background: rgba(15, 15, 21, 1);
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.submitButton {
+  padding: 16px 24px;
+  background: var(--accent);
+  color: black;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.submitButton:hover {
+  background: #5a96e8;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(110, 168, 254, 0.3);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 107, 107, 0.05);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 8px;
+  margin: 0;
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.authLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.authLink:hover {
+  color: #5a96e8;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+  gap: 12px;
+}
+
+.logoIcon {
+  width: 48px;
+  height: 48px;
+  background: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fg);
+}
