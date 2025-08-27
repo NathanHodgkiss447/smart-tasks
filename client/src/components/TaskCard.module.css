@@ -1,0 +1,165 @@
+.card {
+  background: var(--card);
+  border: 1px solid #242433;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  cursor: grab;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border-color: #3a3a4a;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.cardOverdue {
+  border-color: var(--danger);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.15);
+}
+
+.cardCompleted {
+  opacity: 0.6;
+  border-color: var(--ok);
+}
+
+.cardCompleted .cardTitle {
+  text-decoration: line-through;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: var(--fg);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.priorityChip {
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priorityLow {
+  background: rgba(110, 254, 185, 0.1);
+  color: var(--ok);
+  border: 1px solid rgba(110, 254, 185, 0.3);
+}
+
+.priorityMed {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.priorityHigh {
+  background: rgba(255, 107, 107, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.dueDate {
+  color: var(--muted);
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dueDateOverdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.actionButton {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.editButton {
+  background: var(--accent);
+  color: black;
+  border: none;
+  font-weight: 600;
+}
+
+.editButton:hover {
+  background: #5a96e8;
+}
+
+.deleteButton {
+  background: rgba(255, 107, 107, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.deleteButton:hover {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.5);
+}
+
+.dragHandle {
+  color: var(--muted);
+  padding: 4px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .dragHandle {
+  opacity: 1;
+}
+
+.isDragging {
+  transform: rotate(5deg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
