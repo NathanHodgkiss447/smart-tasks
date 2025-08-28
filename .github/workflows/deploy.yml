@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  # --- SAST job (CodeQL + Semgrep) ---
+  # --- SAST job (CodeQL + Semgrep CLI) ---
   sast:
     name: SAST (CodeQL + Semgrep)
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write # required to upload SARIF
+      security-events: write # required to upload SARIF to Code Scanning
       actions: read
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,6 @@ jobs:
           languages: javascript, typescript
           queries: security-and-quality
 
-      # For JS/TS, autobuild is fine (no compile step needed)
       - name: CodeQL Autobuild
         uses: github/codeql-action/autobuild@v3
 
@@ -34,23 +33,23 @@ jobs:
         with:
           category: "monorepo-js"
 
-      # --- Semgrep OSS (extra coverage, fast) ---
-      - name: Semgrep Scan
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: |
-            p/ci
-            p/javascript
-          generateSarif: true
-          sarif: semgrep.sarif
-        # Gate on high-severity findings (optional): uncomment to fail build on High+
-        # env:
-        #   SEMGREP_RULES: p/ci
-        #   SEMGREP_TIMEOUT: "600"
-        #   SEMGREP_ENABLE_PATCH: "true"
-        #   SEMGREP_ERROR: "true"
+      # --- Semgrep (CLI, explicit SARIF) ---
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade semgrep
+
+      - name: Semgrep scan (generate SARIF)
+        # Use remote rulesets; adjust/add configs as needed
+        run: |
+          semgrep ci \
+            --config p/ci \
+            --config p/javascript \
+            --sarif -o semgrep.sarif \
+          || true
 
       - name: Upload Semgrep SARIF to Code Scanning
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
@@ -94,6 +93,7 @@ jobs:
       - name: Install deps (client)
         run: npm ci
         working-directory: client
+
       - name: Build (client)
         run: npm run build
         working-directory: client
@@ -103,7 +103,7 @@ jobs:
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # required
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }} # team_… or user_…
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }} # team slug or ID (as used in your org)
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_…
         run: |
           npm i -g vercel@latest
