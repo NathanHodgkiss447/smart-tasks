@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 4000;
 async function start() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Mongo connected - hello");
+    console.log("Mongo connected - hello v2");
     app.listen(PORT, () => console.log(`API listening on :${PORT}`));
   } catch (err) {
     console.error("Failed to start server:", err);

@@ -2,7 +2,7 @@ name: Deploy Frontend & Backend
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      # Optional local build (good for catching errors early)
+      # Build locally (helps catch issues early)
       - name: Install deps (client)
         run: npm ci
         working-directory: client
@@ -46,24 +46,27 @@ jobs:
         run: npm run build
         working-directory: client
 
-      # Deploy via Vercel CLI from repo root.
-      # Keep Vercel Project Settings → Root Directory = "client"
+      # Deploy with Vercel CLI WITHOUT .vercel/project.json
+      # Provide both IDs + scope, and run from /client.
       - name: Deploy to Vercel (prebuilt)
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # required
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }} # team_… or user_…
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_…
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}# prj_…
         run: |
           npm i -g vercel@latest
           vercel pull --yes --environment=production \
             --token="$VERCEL_TOKEN" \
             --scope="$VERCEL_ORG_ID" \
-            --org-id="$VERCEL_ORG_ID" \
-            --project-id="$VERCEL_PROJECT_ID"
-          vercel build --prod --token="$VERCEL_TOKEN"
+            --project="$VERCEL_PROJECT_ID" \
+            --cwd client
+          vercel build --prod \
+            --token="$VERCEL_TOKEN" \
+            --cwd client
           vercel deploy --prebuilt --prod \
             --token="$VERCEL_TOKEN" \
-            --scope="$VERCEL_ORG_ID"
+            --scope="$VERCEL_ORG_ID" \
+            --cwd client
 
   backend:
     if: needs.changes.outputs.server == 'true'
