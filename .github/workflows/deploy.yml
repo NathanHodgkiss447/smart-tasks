@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write # needed for uploading SARIF
+      security-events: write
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # CodeQL for JavaScript/TypeScript
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
@@ -31,9 +31,8 @@ jobs:
       - name: CodeQL Analyze
         uses: github/codeql-action/analyze@v3
         with:
-          category: "monorepo-js"
+          category: monorepo-js
 
-      # Semgrep CLI (explicit SARIF output)
       - name: Install Semgrep
         run: |
           python3 -m pip install --upgrade pip
@@ -42,7 +41,6 @@ jobs:
       - name: Run Semgrep and generate SARIF
         run: |
           semgrep --version
-          # Add/remove configs as you like; p/ci is a good default
           semgrep --config p/ci --config p/javascript --sarif --output semgrep.sarif
 
       - name: Upload Semgrep SARIF to Code Scanning
@@ -58,9 +56,12 @@ jobs:
       client: ${{ steps.filter.outputs.client }}
       server: ${{ steps.filter.outputs.server }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
         id: filter
+        uses: dorny/paths-filter@v3
         with:
           filters: |
             client:
@@ -78,14 +79,16 @@ jobs:
       group: vercel-frontend-prod
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      # Optional local build to catch issues early
       - name: Install deps (client)
         run: npm ci
         working-directory: client
@@ -94,7 +97,6 @@ jobs:
         run: npm run build
         working-directory: client
 
-      # Deploy via Vercel CLI using env IDs (no .vercel/project.json)
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # required
@@ -124,7 +126,9 @@ jobs:
       group: render-backend-prod
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Trigger Render deploy
         run: |
           curl -fsS -X POST \
