@@ -2,7 +2,7 @@ name: Deploy Frontend & Backend
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      # Build your Vite app locally (optional but nice for catching issues early)
+      # Optional local build (good for catching errors early)
       - name: Install deps (client)
         run: npm ci
         working-directory: client
@@ -46,8 +46,8 @@ jobs:
         run: npm run build
         working-directory: client
 
-      # Deploy via Vercel CLI from the repo root.
-      # IMPORTANT: In Vercel UI, set Project -> Settings -> General -> Root Directory = "client"
+      # Deploy via Vercel CLI from repo root.
+      # Keep Vercel Project Settings → Root Directory = "client"
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -55,9 +55,15 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_…
         run: |
           npm i -g vercel@latest
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
+          vercel pull --yes --environment=production \
+            --token="$VERCEL_TOKEN" \
+            --scope="$VERCEL_ORG_ID" \
+            --org-id="$VERCEL_ORG_ID" \
+            --project-id="$VERCEL_PROJECT_ID"
           vercel build --prod --token="$VERCEL_TOKEN"
-          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
+          vercel deploy --prebuilt --prod \
+            --token="$VERCEL_TOKEN" \
+            --scope="$VERCEL_ORG_ID"
 
   backend:
     if: needs.changes.outputs.server == 'true'
