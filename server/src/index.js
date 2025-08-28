@@ -20,11 +20,10 @@ app.use("/reminders", remindersRouter);
 
 const PORT = process.env.PORT || 4000;
 
-// TES change 2
 async function start() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Mongo connected");
+    console.log("Mongo connected - git actions working");
     app.listen(PORT, () => console.log(`API listening on :${PORT}`));
   } catch (err) {
     console.error("Failed to start server:", err);
