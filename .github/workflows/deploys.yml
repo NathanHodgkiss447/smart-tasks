@@ -2,7 +2,7 @@ name: Deploy Frontend & Backend
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -23,29 +23,6 @@ jobs:
               - 'server/**'
 
   frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: client/package-lock.json
-      - run: npm ci
-        working-directory: client
-      - run: npm run build
-        working-directory: client
-      - name: Deploy to Vercel (prebuilt)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          npm i -g vercel@latest
-          # Run from repo root; Vercel knows Root Directory=client
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
-          vercel build --prod --token="$VERCEL_TOKEN"
-          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
     if: needs.changes.outputs.client == 'true'
     needs: changes
     runs-on: ubuntu-latest
@@ -53,9 +30,6 @@ jobs:
     concurrency:
       group: vercel-frontend-prod
       cancel-in-progress: true
-    defaults:
-      run:
-        working-directory: client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -63,18 +37,27 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: client/package-lock.json
-      - run: npm ci
-      - run: npm run build
+
+      # Build your Vite app locally (optional but nice for catching issues early)
+      - name: Install deps (client)
+        run: npm ci
+        working-directory: client
+      - name: Build (client)
+        run: npm run build
+        working-directory: client
+
+      # Deploy via Vercel CLI from the repo root.
+      # IMPORTANT: In Vercel UI, set Project -> Settings -> General -> Root Directory = "client"
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }} # team_… or user_…
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_…
         run: |
           npm i -g vercel@latest
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
           vercel build --prod --token="$VERCEL_TOKEN"
-          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
 
   backend:
     if: needs.changes.outputs.server == 'true'
