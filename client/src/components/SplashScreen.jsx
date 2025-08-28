@@ -21,7 +21,7 @@ export default function SplashScreen({ onComplete }) {
     <div className={styles.splashScreen}>
       <div className={styles.splashLogo}>
         <div className={styles.splashIcon}>✓</div>
-        <h1 className={styles.splashTitle}>Smart Tasks - V6</h1>
+        <h1 className={styles.splashTitle}>Smart Tasks - V7</h1>
         <p className={styles.splashSubtitle}>Intelligent task management</p>
       </div>
     </div>
