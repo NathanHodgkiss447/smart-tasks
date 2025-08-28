@@ -13,6 +13,47 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      security-events: write    # needed to upload SARIF
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- CodeQL (JS/TS) ---
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+          queries: security-and-quality
+
+      - name: CodeQL Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: CodeQL Analyze
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "monorepo-js"
+
+      # --- Semgrep (CLI) -> produce SARIF explicitly ---
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install semgrep
+
+      - name: Run Semgrep and generate SARIF
+        # Choose rulesets you want; p/ci is a solid default
+        run: |
+          semgrep --version
+          semgrep --config p/ci --config p/javascript --sarif --output semgrep.sarif
+          ls -al
+
+      - name: Upload Semgrep SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+    name: SAST (CodeQL + Semgrep)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
       security-events: write # required to upload SARIF
       actions: read
     steps:
