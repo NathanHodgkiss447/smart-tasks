@@ -38,7 +38,7 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      # Build locally (helps catch issues early)
+      # Optional local build to catch errors early
       - name: Install deps (client)
         run: npm ci
         working-directory: client
@@ -46,19 +46,18 @@ jobs:
         run: npm run build
         working-directory: client
 
-      # Deploy with Vercel CLI WITHOUT .vercel/project.json
-      # Provide both IDs + scope, and run from /client.
+      # Deploy via Vercel CLI WITHOUT .vercel/project.json in the repo.
+      # The CLI reads VERCEL_PROJECT_ID / VERCEL_ORG_ID from env.
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # required
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }} # team_… or user_…
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}# prj_…
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # prj_…
         run: |
           npm i -g vercel@latest
           vercel pull --yes --environment=production \
             --token="$VERCEL_TOKEN" \
             --scope="$VERCEL_ORG_ID" \
-            --project="$VERCEL_PROJECT_ID" \
             --cwd client
           vercel build --prod \
             --token="$VERCEL_TOKEN" \
