@@ -76,15 +76,21 @@ smart-tasks/
 │   │   └── index.js        # Server entry point
 │   ├── package.json
 │   └── docker-compose.yml  # MongoDB container setup
+├── .github/
+│   └── workflows/
+│       └── deploy.yml      # CI/CD deployment pipeline
+├── vercel.json             # Vercel deployment configuration
+├── deploy-workflow-guide.md # Detailed deployment guide
 └── README.md
 ```
 
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Node.js (v18 or higher)
+- Node.js (v20 or higher recommended)
 - MongoDB (or Docker for containerized MongoDB)
-- npm or yarn package manager
+- npm package manager
+- Git for version control
 
 ### 1. Clone the Repository
 ```bash
@@ -177,11 +183,12 @@ The application uses JWT (JSON Web Tokens) for authentication:
 
 ## 🛡️ Security Features
 
-- Password hashing with bcrypt
-- JWT token-based authentication
-- Input validation with Zod schemas
-- CORS protection
-- Secure HTTP headers
+- **Password Security**: bcrypt hashing for secure password storage
+- **JWT Authentication**: Token-based authentication system
+- **Input Validation**: Zod schemas for request validation
+- **CORS Protection**: Cross-origin resource sharing configuration
+- **Automated Security Testing**: CodeQL and Semgrep SAST in CI/CD pipeline
+- **Secure HTTP Headers**: Protection against common vulnerabilities
 
 ## 📊 API Endpoints
 
@@ -199,18 +206,36 @@ The application uses JWT (JSON Web Tokens) for authentication:
 ### Reminders
 - `GET /reminders/summary` - Get task summary with smart suggestions
 
-## 🏗️ Development
+## 🚀 Deployment
 
-### Building for Production
+This project includes automated CI/CD deployment to production environments:
+
+- **Frontend**: Deployed to Vercel with automatic builds
+- **Backend**: Deployed to Render with API-triggered deployments
+- **Security**: Automated SAST scanning with CodeQL and Semgrep
+- **Smart Deployment**: Only deploys changed components (frontend/backend)
+
+For detailed deployment information, see the [**Deployment Workflow Guide**](./deploy-workflow-guide.md).
+
+### Manual Deployment
+
+#### Building for Production
 ```bash
 # Frontend
 cd client
 npm run build
 
-# Backend
+# Backend  
 cd server
 npm start
 ```
+
+#### Environment Setup
+Ensure the following secrets are configured for automated deployment:
+- `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+- `RENDER_API_KEY`, `RENDER_SERVICE_ID`
+
+## 🏗️ Development
 
 ### Code Style
 - ES6+ JavaScript/JSX
@@ -218,6 +243,13 @@ npm start
 - Functional components with React hooks
 - RESTful API design
 - MongoDB with Mongoose ODM
+
+### Development Workflow
+1. **Feature Development**: Work on feature branches
+2. **Security Scanning**: Automated SAST on all pull requests
+3. **Code Review**: Pull request review process
+4. **Automated Deployment**: Merge to master triggers production deployment
+5. **Monitoring**: Track deployments via Vercel and Render dashboards
 
 ## 🤝 Contributing
 
