@@ -3,6 +3,8 @@
   "git": {
     "deploymentEnabled": false
   },
+  "buildCommand": "cd client && npm run build",
+  "outputDirectory": "client/dist",
   "rewrites": [
     {
       "source": "/(.*)",
