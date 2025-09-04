@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Dashboard from "./Dashboard.jsx";
@@ -15,6 +15,7 @@ function Protected({ children }) {
 
 export default function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
   const authenticated = isAuthed();
 
@@ -38,7 +39,7 @@ export default function App() {
                   className={styles.logoutButton}
                   onClick={() => {
                     localStorage.removeItem("token");
-                    window.location.href = "/login";
+                    navigate("/login");
                   }}
                 >
                   Logout
