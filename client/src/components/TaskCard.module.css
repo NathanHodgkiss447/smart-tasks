@@ -7,12 +7,26 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
   cursor: grab;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px; /* Touch target minimum */
 }
 
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   border-color: #3a3a4a;
+}
+
+.card:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .card:active {
@@ -22,6 +36,35 @@
 .cardOverdue {
   border-color: var(--danger);
   box-shadow: 0 2px 8px rgba(255, 107, 107, 0.15);
+}
+
+.cardToday {
+  border-color: #ffc107;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.15);
+}
+
+.cardUpcoming {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(110, 168, 254, 0.15);
+}
+
+.cardHighPriority {
+  animation: subtlePulse 2s ease-in-out infinite;
+  border-left: 4px solid var(--danger);
+}
+
+@keyframes subtlePulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.15);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.25);
+  }
+}
+
+.cardSwiping {
+  transition: transform 0.1s ease;
+  z-index: 10;
 }
 
 .cardCompleted {
@@ -41,11 +84,17 @@
 }
 
 .checkbox {
-  width: 18px;
-  height: 18px;
+  width: 20px; /* Increased for better touch targets */
+  height: 20px;
   margin-top: 2px;
   accent-color: var(--accent);
   cursor: pointer;
+  min-width: 20px; /* Prevent shrinking */
+}
+
+.checkbox:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .cardContent {
@@ -58,6 +107,14 @@
   color: var(--fg);
   margin-bottom: 8px;
   line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priorityIndicator {
+  font-size: 0.9em;
+  opacity: 0.8;
 }
 
 .cardMeta {
@@ -66,6 +123,18 @@
   gap: 8px;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.taskStatus {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(161, 161, 179, 0.1);
+  color: var(--muted);
+  border: 1px solid rgba(161, 161, 179, 0.2);
 }
 
 .priorityChip {
@@ -108,6 +177,16 @@
   font-weight: 600;
 }
 
+.dueDateToday {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.dueDateUpcoming {
+  color: var(--accent);
+  font-weight: 500;
+}
+
 .cardActions {
   display: flex;
   gap: 8px;
@@ -115,13 +194,23 @@
 }
 
 .actionButton {
-  padding: 6px 12px;
+  padding: 8px 16px; /* Increased for better touch targets */
   border-radius: 8px;
   font-size: 0.85em;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
+  min-height: 44px; /* Touch target minimum */
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionButton:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .editButton {
@@ -162,4 +251,201 @@
   transform: rotate(5deg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+}
+
+.cardSelected {
+  border-color: var(--accent);
+  background: rgba(110, 168, 254, 0.08);
+  box-shadow: 0 4px 16px rgba(110, 168, 254, 0.2);
+}
+
+.cardBulkMode {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cardBulkMode:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.selectCheckbox {
+  accent-color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+}
+
+.selectCheckbox:checked {
+  background: var(--accent);
+}
+
+/* Status Bar */
+.statusBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s ease;
+}
+
+.statusOverdue {
+  background: linear-gradient(90deg, var(--danger) 0%, rgba(255, 107, 107, 0.6) 100%);
+}
+
+.statusToday {
+  background: linear-gradient(90deg, #ffc107 0%, rgba(255, 193, 7, 0.6) 100%);
+}
+
+.statusUpcoming {
+  background: linear-gradient(90deg, var(--accent) 0%, rgba(110, 168, 254, 0.6) 100%);
+}
+
+.statusCompleted {
+  background: linear-gradient(90deg, var(--ok) 0%, rgba(110, 254, 185, 0.6) 100%);
+}
+
+.statusNodate {
+  background: linear-gradient(90deg, var(--muted) 0%, rgba(161, 161, 179, 0.6) 100%);
+  opacity: 0.3;
+}
+
+/* Mobile Quick Actions */
+.quickActions {
+  position: absolute;
+  top: 50%;
+  right: -120px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.quickAction {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: rgba(22, 22, 29, 0.9);
+  color: var(--fg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.quickAction:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.quickAction:first-child {
+  background: rgba(110, 254, 185, 0.2);
+  color: var(--ok);
+}
+
+.quickAction:last-child {
+  background: rgba(255, 107, 107, 0.2);
+  color: var(--danger);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 2px;
+    box-shadow: none;
+  }
+  
+  .cardHighPriority {
+    animation: none;
+    border-left-width: 6px;
+  }
+  
+  .statusBar {
+    height: 4px;
+  }
+  
+  .priorityChip {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  
+  .cardHighPriority {
+    animation: none;
+  }
+  
+  .actionButton {
+    transition: none;
+  }
+  
+  .quickAction {
+    transition: none;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .actionButton {
+    font-size: 0.9em;
+    padding: 10px 20px;
+  }
+  
+  .cardMeta {
+    gap: 6px;
+  }
+  
+  .priorityChip {
+    font-size: 0.7em;
+    padding: 3px 8px;
+  }
+  
+  .dueDate {
+    font-size: 0.8em;
+  }
+  
+  .taskStatus {
+    font-size: 0.65em;
+    padding: 2px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .cardTitle {
+    font-size: 1em;
+    gap: 6px;
+  }
+  
+  .cardMeta {
+    margin-bottom: 8px;
+  }
+  
+  .priorityIndicator {
+    font-size: 0.8em;
+  }
 }

@@ -4,7 +4,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import styles from "./TaskCard.module.css";
 
-export default function TaskCard({ task, onToggle, onDelete }) {
+export default function TaskCard({ 
+  task, 
+  onToggle, 
+  onDelete, 
+  isSelected = false, 
+  onSelect = null, 
+  bulkMode = false 
+}) {
   const {
     attributes,
     listeners,
@@ -30,6 +37,8 @@ export default function TaskCard({ task, onToggle, onDelete }) {
     task.completed && styles.cardCompleted,
     isOverdue && styles.cardOverdue,
     isDragging && styles.isDragging,
+    isSelected && styles.cardSelected,
+    bulkMode && styles.cardBulkMode,
   ].filter(Boolean).join(' ');
 
   const priorityClasses = [
@@ -50,6 +59,18 @@ export default function TaskCard({ task, onToggle, onDelete }) {
       {...attributes}
     >
       <div className={styles.cardHeader}>
+        {bulkMode && onSelect && (
+          <input
+            type="checkbox"
+            className={`${styles.checkbox} ${styles.selectCheckbox}`}
+            checked={isSelected}
+            onChange={(e) => {
+              e.stopPropagation();
+              onSelect(task);
+            }}
+            aria-label={`Select task: ${task.title}`}
+          />
+        )}
         <input
           type="checkbox"
           className={styles.checkbox}
@@ -76,14 +97,38 @@ export default function TaskCard({ task, onToggle, onDelete }) {
         </div>
       </div>
       <div className={styles.cardActions}>
-        <Link to={`/tasks/${task._id}`} className={`${styles.actionButton} ${styles.editButton}`}>
+        <Link 
+          to={`/tasks/${task._id}`} 
+          className={`${styles.actionButton} ${styles.editButton}`}
+          data-edit-link
+          aria-label={`Edit task: ${task.title}`}
+        >
           Edit
         </Link>
         <button 
           className={`${styles.actionButton} ${styles.deleteButton}`}
           onClick={() => onDelete(task)}
+          aria-label={`Delete task: ${task.title}`}
         >
           Delete
+        </button>
+      </div>
+      
+      {/* Mobile Quick Actions (shown on swipe) */}
+      <div className={styles.quickActions} style={{ opacity: Math.abs(swipeOffset) / 120 }}>
+        <button 
+          className={styles.quickAction}
+          onClick={() => onToggle(task)}
+          aria-label={task.completed ? 'Mark as incomplete' : 'Mark as complete'}
+        >
+          {task.completed ? '↶' : '✓'}
+        </button>
+        <button 
+          className={styles.quickAction}
+          onClick={() => onDelete(task)}
+          aria-label={`Delete ${task.title}`}
+        >
+          🗑️
         </button>
       </div>
     </div>

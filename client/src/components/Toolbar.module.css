@@ -157,7 +157,59 @@
   font-weight: bold;
 }
 
+/* Mobile Menu Toggle */
+.mobileMenuToggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: var(--card);
+  color: var(--fg);
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.mobileMenuToggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.05);
+}
+
+.mobileMenuToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.toolbarHidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Responsive design */
+@media (max-width: 768px) {
+  .mobileMenuToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toolbar {
+    position: fixed;
+    top: 70px;
+    left: 16px;
+    right: 16px;
+    z-index: 999;
+    transition: all 0.3s ease;
+  }
+}
+
 @media (max-width: 640px) {
   .toolbar {
     flex-direction: column;

@@ -89,3 +89,71 @@ body {
 .reminder .suggest button {
   margin-left: 6px;
 }
+
+/* Accessibility Improvements */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--accent);
+  color: black;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --bg: #000000;
+    --fg: #ffffff;
+    --card: #1a1a1a;
+    --accent: #ffffff;
+    --muted: #cccccc;
+  }
+  
+  .card {
+    border-width: 2px;
+    box-shadow: none;
+  }
+  
+  button, a {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Focus visible improvements */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .muted {
+    font-size: 0.9em;
+  }
+}
