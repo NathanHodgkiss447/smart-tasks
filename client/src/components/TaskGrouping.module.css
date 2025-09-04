@@ -1,0 +1,409 @@
+.groupContainer {
+  padding: 0;
+  width: 100%;
+}
+
+.group {
+  margin-bottom: 24px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.group:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Group Type Variations */
+.groupHigh {
+  border-left: 4px solid var(--danger);
+}
+
+.groupMed {
+  border-left: 4px solid #ffc107;
+}
+
+.groupLow {
+  border-left: 4px solid var(--ok);
+}
+
+.groupOverdue {
+  border-left: 4px solid var(--danger);
+  background: rgba(255, 107, 107, 0.02);
+}
+
+.groupToday {
+  border-left: 4px solid #ffc107;
+  background: rgba(255, 193, 7, 0.02);
+}
+
+.groupUpcoming {
+  border-left: 4px solid var(--accent);
+  background: rgba(110, 168, 254, 0.02);
+}
+
+.groupCompleted {
+  border-left: 4px solid var(--ok);
+  opacity: 0.8;
+}
+
+.groupActive {
+  border-left: 4px solid var(--accent);
+}
+
+.groupHeader {
+  position: relative;
+  overflow: hidden;
+}
+
+.groupHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(110, 168, 254, 0.3) 50%, 
+    transparent 100%
+  );
+}
+
+.groupToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  outline: none;
+}
+
+.groupToggle:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.groupToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.groupIcon {
+  font-size: 1.25rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.groupTitle {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.groupCount {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.collapseIcon {
+  font-size: 0.75rem;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+  width: 16px;
+  text-align: center;
+}
+
+.collapseIcon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.groupContent {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.contentCollapsed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+}
+
+.groupTask {
+  transition: all 0.2s ease;
+}
+
+/* Empty Group State */
+.emptyGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.emptyIcon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.emptyText {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Density Variations */
+.densityComfortable {
+  /* Default - inherit base styles */
+}
+
+.densityCompact .group {
+  margin-bottom: 16px;
+}
+
+.densityCompact .groupToggle {
+  padding: 16px;
+}
+
+.densityCompact .groupContent {
+  padding: 0 16px 16px;
+  gap: 8px;
+}
+
+.densityCompact .groupTitle {
+  font-size: 1rem;
+}
+
+.densityCompact .emptyGroup {
+  padding: 30px 16px;
+}
+
+.densityMinimal .group {
+  margin-bottom: 12px;
+}
+
+.densityMinimal .groupToggle {
+  padding: 12px 16px;
+}
+
+.densityMinimal .groupContent {
+  padding: 0 12px 12px;
+  gap: 6px;
+}
+
+.densityMinimal .groupTitle {
+  font-size: 0.95rem;
+}
+
+.densityMinimal .groupIcon {
+  font-size: 1rem;
+}
+
+.densityMinimal .emptyGroup {
+  padding: 20px 12px;
+}
+
+.densityMinimal .emptyIcon {
+  font-size: 1.5rem;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.groupHeader.skeleton {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.skeletonGroupTitle {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 150px;
+  margin: 20px;
+}
+
+.groupTask.skeleton {
+  height: 80px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.skeletonTask {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonTask::before,
+.skeletonTask::after {
+  content: '';
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.skeletonTask::before {
+  width: 80%;
+}
+
+.skeletonTask::after {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .group {
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+  
+  .groupToggle {
+    padding: 16px;
+  }
+  
+  .groupTitle {
+    font-size: 1rem;
+  }
+  
+  .groupContent {
+    padding: 0 16px 16px;
+    gap: 8px;
+  }
+  
+  .emptyGroup {
+    padding: 30px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .group {
+    margin-bottom: 12px;
+    border-radius: 8px;
+  }
+  
+  .groupToggle {
+    padding: 12px;
+    gap: 8px;
+  }
+  
+  .groupTitle {
+    font-size: 0.95rem;
+  }
+  
+  .groupIcon {
+    font-size: 1rem;
+    width: 20px;
+  }
+  
+  .groupCount {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+  
+  .groupContent {
+    padding: 0 12px 12px;
+    gap: 6px;
+  }
+  
+  .emptyGroup {
+    padding: 20px 12px;
+  }
+  
+  .emptyIcon {
+    font-size: 1.5rem;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .group {
+    border-width: 2px;
+  }
+  
+  .groupToggle:focus-visible {
+    outline-width: 3px;
+  }
+  
+  .groupCount {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .group,
+  .groupToggle,
+  .groupCount,
+  .collapseIcon,
+  .groupContent,
+  .groupTask {
+    transition: none;
+  }
+  
+  .skeleton::before {
+    animation: none;
+  }
+}

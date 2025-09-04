@@ -1,0 +1,720 @@
+/* Base Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.shimmerEffect {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+/* Task Card Skeleton */
+.taskSkeleton {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.taskSkeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.skeletonCheckbox {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.taskContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonTitle {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 75%;
+}
+
+.skeletonMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.skeletonChip {
+  height: 16px;
+  width: 60px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.skeletonDate {
+  height: 16px;
+  width: 100px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.skeletonDrag {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+.taskActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.skeletonButton {
+  height: 32px;
+  width: 60px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+/* Density Variations */
+.densityCompact {
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.densityMinimal {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+}
+
+.densityMinimal .taskHeader {
+  margin-bottom: 0;
+  align-items: center;
+}
+
+.densityMinimal .skeletonTitle {
+  height: 16px;
+}
+
+/* Filters Skeleton */
+.filtersSkeleton {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.filtersSkeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.searchSkeleton {
+  height: 48px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.filterButtonsContainer {
+  display: flex;
+  gap: 4px;
+}
+
+.filterButtonSkeleton {
+  height: 36px;
+  width: 80px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+/* ViewSwitcher Skeleton */
+.viewSwitcherSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewSwitcherSkeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.viewSwitcherTrack {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.viewButtonSkeleton {
+  width: 70px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+/* Loading Spinner */
+.spinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+}
+
+.spinnerContainer.inline {
+  flex-direction: row;
+  gap: 8px;
+  padding: 0;
+}
+
+.spinner {
+  position: relative;
+  display: inline-block;
+}
+
+.spinnerRing {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  animation: spinnerRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.spinnerRing:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.spinnerRing:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.spinnerRing:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes spinnerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinner Sizes */
+.spinnerSmall .spinnerRing {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+}
+
+.spinnerMedium .spinnerRing {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.spinnerLarge .spinnerRing {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+/* Spinner Colors */
+.spinnerAccent .spinnerRing {
+  border-top-color: var(--accent);
+  border-right-color: rgba(110, 168, 254, 0.3);
+}
+
+.spinnerSuccess .spinnerRing {
+  border-top-color: var(--ok);
+  border-right-color: rgba(110, 254, 185, 0.3);
+}
+
+.spinnerDanger .spinnerRing {
+  border-top-color: var(--danger);
+  border-right-color: rgba(255, 107, 107, 0.3);
+}
+
+.spinnerLabel {
+  font-size: 0.875rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Loading Dots */
+.dotsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dotsPulse 1.4s ease-in-out infinite both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes dotsPulse {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Dots Sizes */
+.dotsSmall .dot {
+  width: 4px;
+  height: 4px;
+}
+
+.dotsMedium .dot {
+  width: 6px;
+  height: 6px;
+}
+
+.dotsLarge .dot {
+  width: 8px;
+  height: 8px;
+}
+
+/* Dots Colors */
+.dotsAccent .dot {
+  background: var(--accent);
+}
+
+.dotsSuccess .dot {
+  background: var(--ok);
+}
+
+.dotsDanger .dot {
+  background: var(--danger);
+}
+
+/* Progressive Loader */
+.progressiveLoader {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.progressPercentage {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.progressTrack {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, #5a96e8 100%);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progressAnimated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progressShimmer 2s linear infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Pulsing Animation */
+.pulsingWrapper {
+  transition: opacity 0.3s ease;
+}
+
+.pulsing {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* List Loading Container */
+.listLoadingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.listSkeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted);
+  min-height: 300px;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  color: var(--accent);
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--fg);
+}
+
+.emptyDescription {
+  font-size: 1rem;
+  max-width: 400px;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 24px;
+}
+
+.emptyAction {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.emptyAction:hover {
+  background: #5a96e8;
+  transform: translateY(-1px);
+}
+
+.emptyAction:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Error State */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted);
+  min-height: 300px;
+}
+
+.errorIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.7;
+  color: var(--danger);
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--danger);
+}
+
+.errorDescription {
+  font-size: 1rem;
+  max-width: 400px;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 24px;
+}
+
+.errorAction {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.errorAction:hover {
+  background: #e55555;
+  transform: translateY(-1px);
+}
+
+.errorAction:focus-visible {
+  outline: 2px solid var(--danger);
+  outline-offset: 2px;
+}
+
+/* Lazy Load Trigger */
+.lazyLoadTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.lazyLoadText {
+  opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .taskSkeleton {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .filtersSkeleton {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .searchSkeleton {
+    height: 44px;
+  }
+  
+  .viewButtonSkeleton {
+    width: 60px;
+    height: 44px;
+  }
+  
+  .emptyState,
+  .errorState {
+    padding: 60px 16px;
+  }
+  
+  .emptyIcon,
+  .errorIcon {
+    font-size: 3rem;
+  }
+  
+  .emptyTitle,
+  .errorTitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .taskSkeleton {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .filtersSkeleton {
+    padding: 12px;
+  }
+  
+  .searchSkeleton {
+    height: 40px;
+  }
+  
+  .filterButtonsContainer {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  
+  .filterButtonSkeleton {
+    height: 32px;
+    width: 70px;
+  }
+  
+  .viewButtonSkeleton {
+    width: 50px;
+    height: 40px;
+  }
+  
+  .emptyState,
+  .errorState {
+    padding: 40px 12px;
+    min-height: 250px;
+  }
+  
+  .emptyIcon,
+  .errorIcon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  
+  .emptyTitle,
+  .errorTitle {
+    font-size: 1.1rem;
+  }
+  
+  .emptyAction,
+  .errorAction {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .shimmerEffect,
+  .taskSkeleton::before,
+  .filtersSkeleton::before,
+  .viewSwitcherSkeleton::before {
+    animation: none;
+  }
+  
+  .spinnerRing {
+    animation: none;
+  }
+  
+  .dot {
+    animation: none;
+  }
+  
+  .pulsing {
+    animation: none;
+  }
+  
+  .progressAnimated::after {
+    animation: none;
+  }
+  
+  .emptyAction:hover,
+  .errorAction:hover {
+    transform: none;
+  }
+}

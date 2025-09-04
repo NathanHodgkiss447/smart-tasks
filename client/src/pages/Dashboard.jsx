@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 import styles from "../components/Toolbar.module.css";
+import dashboardStyles from "./Dashboard.module.css";
 import {
   DndContext,
   closestCenter,
@@ -27,16 +28,36 @@ import QuickActionsToolbar from "../components/QuickActionsToolbar.jsx";
 import TaskStatistics from "../components/TaskStatistics.jsx";
 import ToastContainer, { useToasts } from "../components/ToastNotifications.jsx";
 import { useBulkOperations } from "../hooks/useBulkOperations.js";
+import ViewSwitcher from "../components/ViewSwitcher.jsx";
+import GridView from "../components/GridView.jsx";
+import KanbanView from "../components/KanbanView.jsx";
+import TimelineView from "../components/TimelineView.jsx";
+import TaskGrouping from "../components/TaskGrouping.jsx";
+import EnhancedFilters from "../components/EnhancedFilters.jsx";
+import FocusMode from "../components/FocusMode.jsx";
+import { LoadingSpinner, ListLoadingSkeleton, EmptyState, ErrorState } from "../components/LoadingStates.jsx";
 
 const FILTERS = ["all", "overdue", "today", "upcoming", "completed"];
 
 export default function Dashboard() {
+  // Basic state
   const [filter, setFilter] = useState("today");
   const [tasks, setTasks] = useState([]);
   const [summary, setSummary] = useState(null);
   const [showStats, setShowStats] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  
+  // Enhanced dashboard state
+  const [currentView, setCurrentView] = useState('list');
+  const [grouping, setGrouping] = useState('none');
+  const [density, setDensity] = useState('comfortable');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [focusPreset, setFocusPreset] = useState('minimal');
+  const [focusSettings, setFocusSettings] = useState({});
   
   // Refs for accessibility
   const skipLinkRef = useRef(null);
@@ -90,12 +111,24 @@ export default function Dashboard() {
   );
 
   async function load() {
-    const [{ data: t }, { data: s }] = await Promise.all([
-      http.get(`/tasks${filter === "all" ? "" : `?status=${filter}`}`),
-      http.get("/reminders/summary"),
-    ]);
-    setTasks(t);
-    setSummary(s);
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const [{ data: t }, { data: s }] = await Promise.all([
+        http.get(`/tasks${filter === "all" ? "" : `?status=${filter}`}`),
+        http.get("/reminders/summary"),
+      ]);
+      
+      setTasks(t);
+      setSummary(s);
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+      setError('Failed to load dashboard data');
+      showError('Error', 'Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -189,13 +222,57 @@ export default function Dashboard() {
     }
   };
 
-  // Focus mode toggle
+  // Enhanced focus mode handlers
   const handleToggleFocus = () => {
     setFocusMode(prev => !prev);
     if (!focusMode) {
-      showInfo("Focus mode enabled", "Hiding completed tasks and distractions");
+      showInfo("Focus mode enabled", "Applied focus filters and settings");
     } else {
       showInfo("Focus mode disabled", "Showing all tasks");
+    }
+  };
+  
+  const handleFocusPresetChange = (preset) => {
+    setFocusPreset(preset);
+    showInfo("Focus preset changed", `Applied ${preset} focus settings`);
+  };
+  
+  const handleFocusSettingsChange = (settings) => {
+    setFocusSettings(settings);
+  };
+  
+  // View and filter handlers
+  const handleViewChange = (view) => {
+    setCurrentView(view);
+    announceToScreenReader(`View changed to ${view}`);
+  };
+  
+  const handleGroupingChange = (groupBy) => {
+    setGrouping(groupBy);
+    announceToScreenReader(`Grouping changed to ${groupBy}`);
+  };
+  
+  const handleDensityChange = (newDensity) => {
+    setDensity(newDensity);
+    announceToScreenReader(`Display density changed to ${newDensity}`);
+  };
+  
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+  };
+  
+  const handlePriorityChange = (priority) => {
+    setPriorityFilter(priority);
+  };
+  
+  // Task move handler for Kanban
+  const handleTaskMove = async (taskId, updates) => {
+    try {
+      await http.patch(`/tasks/${taskId}`, updates);
+      await load(); // Reload to get updated tasks
+      showSuccess("Task moved", "Task status updated successfully");
+    } catch (error) {
+      showError("Error", "Failed to move task");
     }
   };
 
@@ -204,15 +281,63 @@ export default function Dashboard() {
     setShowStats(prev => !prev);
   };
 
-  // Filter tasks based on focus mode
-  const filteredTasks = focusMode ? tasks.filter(task => !task.completed) : tasks;
+  // Enhanced task filtering
+  const filteredTasks = React.useMemo(() => {
+    let filtered = [...tasks];
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(task => 
+        task.title.toLowerCase().includes(query) ||
+        (task.description && task.description.toLowerCase().includes(query))
+      );
+    }
+    
+    // Apply priority filter
+    if (priorityFilter !== 'all') {
+      filtered = filtered.filter(task => task.priority === priorityFilter);
+    }
+    
+    // Apply focus mode filters
+    if (focusMode) {
+      if (focusSettings.hideCompleted) {
+        filtered = filtered.filter(task => !task.completed);
+      }
+      if (focusSettings.hideOverdue) {
+        const now = new Date();
+        filtered = filtered.filter(task => 
+          !task.dueAt || new Date(task.dueAt) >= now || task.completed
+        );
+      }
+      if (focusSettings.hideNoDate) {
+        filtered = filtered.filter(task => task.dueAt);
+      }
+      if (focusSettings.hideLowPriority) {
+        filtered = filtered.filter(task => task.priority !== 'low');
+      }
+    }
+    
+    return filtered;
+  }, [tasks, searchQuery, priorityFilter, focusMode, focusSettings]);
+  
+  // Task statistics for focus mode
+  const taskCounts = React.useMemo(() => {
+    return {
+      total: tasks.length,
+      completed: tasks.filter(t => t.completed).length,
+      overdue: tasks.filter(t => t.dueAt && new Date(t.dueAt) < new Date() && !t.completed).length,
+      noDate: tasks.filter(t => !t.dueAt).length,
+      lowPriority: tasks.filter(t => t.priority === 'low').length
+    };
+  }, [tasks]);
   
   // Skip to main content handler
   const skipToMainContent = useCallback(() => {
     mainContentRef.current?.focus();
   }, []);
   
-  // Global keyboard shortcuts
+  // Enhanced keyboard shortcuts
   useEffect(() => {
     const handleGlobalKeyPress = (e) => {
       // Skip navigation with Tab
@@ -258,13 +383,36 @@ export default function Dashboard() {
               window.location.href = '/tasks/new';
             }
             break;
+          // View switching shortcuts
+          case 'v':
+          case 'V':
+            if (e.ctrlKey || e.metaKey) {
+              e.preventDefault();
+              const views = ['list', 'grid', 'kanban', 'timeline'];
+              const currentIndex = views.indexOf(currentView);
+              const nextView = views[(currentIndex + 1) % views.length];
+              setCurrentView(nextView);
+              announceToScreenReader(`View changed to ${nextView}`);
+            }
+            break;
+          case 'd':
+          case 'D':
+            if (e.ctrlKey || e.metaKey) {
+              e.preventDefault();
+              const densities = ['comfortable', 'compact', 'minimal'];
+              const currentIndex = densities.indexOf(density);
+              const nextDensity = densities[(currentIndex + 1) % densities.length];
+              setDensity(nextDensity);
+              announceToScreenReader(`Density changed to ${nextDensity}`);
+            }
+            break;
         }
       }
     };
     
     document.addEventListener('keydown', handleGlobalKeyPress);
     return () => document.removeEventListener('keydown', handleGlobalKeyPress);
-  }, []);
+  }, [currentView, density]);
   
   // Screen reader announcements
   const announceToScreenReader = (message) => {
@@ -289,6 +437,93 @@ export default function Dashboard() {
       });
     }
   }
+  
+  // Retry handler for error state
+  const handleRetry = () => {
+    load();
+  };
+  
+  // Clear all filters handler
+  const handleClearFilters = () => {
+    setFilter('all');
+    setSearchQuery('');
+    setPriorityFilter('all');
+    setGrouping('none');
+    showInfo('Filters cleared', 'All filters have been reset');
+  };
+  
+  // Render tasks based on current view
+  const renderTasksView = () => {
+    const commonProps = {
+      tasks: filteredTasks,
+      onToggle: toggleComplete,
+      onDelete: remove,
+      selectedTasks: selectedTasks,
+      onSelect: toggleTaskSelection,
+      bulkMode: bulkMode,
+      density: density,
+      loading: loading
+    };
+
+    switch (currentView) {
+      case 'grid':
+        return <GridView {...commonProps} />;
+        
+      case 'kanban':
+        return (
+          <KanbanView 
+            {...commonProps}
+            onTaskMove={handleTaskMove}
+          />
+        );
+        
+      case 'timeline':
+        return <TimelineView {...commonProps} />;
+        
+      case 'list':
+      default:
+        if (grouping !== 'none') {
+          return (
+            <TaskGrouping
+              {...commonProps}
+              viewMode="list"
+              groupBy={grouping}
+            />
+          );
+        }
+        
+        return (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+          >
+            <div className={dashboardStyles.tasksList} role="list">
+              <SortableContext
+                items={filteredTasks.map((t) => t._id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {filteredTasks.map((task) => (
+                  <div key={task._id} role="listitem">
+                    <TaskCard
+                      task={task}
+                      onToggle={toggleComplete}
+                      onDelete={remove}
+                      isSelected={isTaskSelected(task._id)}
+                      onSelect={toggleTaskSelection}
+                      bulkMode={bulkMode}
+                      viewMode="list"
+                      density={density}
+                    />
+                  </div>
+                ))}
+              </SortableContext>
+            </div>
+          </DndContext>
+        );
+    }
+  };
 
   return (
     <>
@@ -336,58 +571,76 @@ export default function Dashboard() {
         </button>
       )}
 
-      {/* Filter Toolbar */}
-      <nav 
-        className={`${styles.toolbar} ${isMobile && !showMobileMenu ? styles.toolbarHidden : ''}`}
-        id="filter-toolbar"
-        aria-label="Task filters"
-        ref={filtersRef}
-      >
-        <div className={styles.filters} role="tablist" aria-label="Filter tasks">
-          {FILTERS.map((f, index) => (
-            <button
-              key={f}
-              className={`${styles.filterButton} ${f === filter ? styles.filterButtonActive : ""}`}
-              onClick={() => setFilter(f)}
-              role="tab"
-              aria-selected={f === filter}
-              aria-controls="tasks-list"
-              aria-label={`Filter by ${f} tasks (Press ${index + 1})`}
-              title={`Keyboard shortcut: ${index + 1}`}
+      {/* Enhanced Dashboard Controls */}
+      <div className={dashboardStyles.dashboardControls}>
+        {/* Enhanced Filters */}
+        <EnhancedFilters
+          currentFilter={filter}
+          onFilterChange={setFilter}
+          currentGrouping={grouping}
+          onGroupingChange={handleGroupingChange}
+          currentDensity={density}
+          onDensityChange={handleDensityChange}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          priorityFilter={priorityFilter}
+          onPriorityChange={handlePriorityChange}
+          showSearch={!focusMode || !focusSettings.minimizeActions}
+          showGrouping={currentView === 'list'}
+          showDensity={true}
+          showPriority={true}
+          compact={isMobile}
+        />
+        
+        {/* View Switcher and Actions */}
+        <div className={dashboardStyles.viewControls}>
+          <ViewSwitcher 
+            currentView={currentView}
+            onViewChange={handleViewChange}
+            className={dashboardStyles.viewSwitcher}
+          />
+          
+          <div className={styles.actions}>
+            {!focusMode && (
+              <Link 
+                to="/tasks/new" 
+                className={styles.newTaskButton}
+                aria-label="Create new task (Ctrl+N)"
+                title="Keyboard shortcut: Ctrl+N"
+              >
+                <span className={styles.newTaskIcon} aria-hidden="true">+</span>
+                New Task
+              </Link>
+            )}
+            
+            {/* Bulk Mode Toggle */}
+            <button 
+              className={`${styles.newTaskButton} ${bulkMode ? styles.filterButtonActive : ''}`}
+              onClick={toggleBulkMode}
+              style={{ marginLeft: '8px', padding: '8px 16px' }}
+              aria-pressed={bulkMode}
+              aria-describedby="bulk-mode-help"
             >
-              {f}
+              {bulkMode ? 'Exit Bulk' : 'Select Multiple'}
             </button>
-          ))}
-        </div>
-        <div className={styles.actions}>
-          {!focusMode && (
-            <Link 
-              to="/tasks/new" 
-              className={styles.newTaskButton}
-              aria-label="Create new task (Ctrl+N)"
-              title="Keyboard shortcut: Ctrl+N"
-            >
-              <span className={styles.newTaskIcon} aria-hidden="true">+</span>
-              New Task
-            </Link>
-          )}
-          
-          {/* Bulk Mode Toggle */}
-          <button 
-            className={`${styles.newTaskButton} ${bulkMode ? styles.filterButtonActive : ''}`}
-            onClick={toggleBulkMode}
-            style={{ marginLeft: '8px', padding: '8px 16px' }}
-            aria-pressed={bulkMode}
-            aria-describedby="bulk-mode-help"
-          >
-            {bulkMode ? 'Exit Bulk' : 'Select Multiple'}
-          </button>
-          
-          <div id="bulk-mode-help" className="sr-only">
-            Use bulk mode to select and perform actions on multiple tasks
+            
+            <div id="bulk-mode-help" className="sr-only">
+              Use bulk mode to select and perform actions on multiple tasks
+            </div>
           </div>
         </div>
-      </nav>
+        
+        {/* Focus Mode Controls */}
+        <FocusMode 
+          isActive={focusMode}
+          onToggle={handleToggleFocus}
+          currentPreset={focusPreset}
+          onPresetChange={handleFocusPresetChange}
+          settings={focusSettings}
+          onSettingsChange={handleFocusSettingsChange}
+          taskCounts={taskCounts}
+        />
+      </div>
 
       {/* Smart Reminder */}
       {!focusMode && <SmartReminder summary={summary} onApply={applySuggested} />}
@@ -398,68 +651,66 @@ export default function Dashboard() {
         ref={mainContentRef}
         tabIndex="-1"
         role="main"
-        aria-label="Tasks list"
+        aria-label="Tasks dashboard"
+        className={dashboardStyles.mainContent}
       >
-        {/* Tasks List */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-        >
+        {error ? (
+          <ErrorState
+            title="Failed to Load Tasks"
+            description={error}
+            onAction={handleRetry}
+            className={dashboardStyles.errorState}
+          />
+        ) : loading ? (
+          <ListLoadingSkeleton 
+            itemCount={6}
+            density={density}
+            showFilters={false}
+            showViewSwitcher={false}
+          />
+        ) : filteredTasks.length === 0 ? (
+          <EmptyState
+            icon={focusMode && tasks.length > 0 ? '🎉' : '📋'}
+            title={focusMode && tasks.length > 0 ? 'All tasks focused!' : 'No tasks found'}
+            description={
+              focusMode && tasks.length > 0 
+                ? 'Great job! All your tasks match the current focus settings.'
+                : searchQuery 
+                  ? `No tasks found matching "${searchQuery}"` 
+                  : 'Create your first task to get started.'
+            }
+            actionLabel={!searchQuery && tasks.length === 0 ? 'Create First Task' : 'Clear Filters'}
+            onAction={!searchQuery && tasks.length === 0 ? () => window.location.href = '/tasks/new' : handleClearFilters}
+            className={dashboardStyles.emptyState}
+          />
+        ) : (
           <div 
-            className="list" 
-            id="tasks-list"
-            role="list"
-            aria-label={`${filteredTasks.length} ${filter} tasks`}
-            aria-live="polite"
+            className={dashboardStyles.tasksContainer}
+            id="tasks-content"
+            role="region"
+            aria-label={`${filteredTasks.length} tasks in ${currentView} view`}
           >
-            {filteredTasks.length === 0 ? (
-              <div 
-                className="muted" 
-                role="status" 
-                aria-live="polite"
-                style={{ textAlign: 'center', padding: '2rem' }}
-              >
-                {focusMode && tasks.length > 0 
-                  ? "All tasks completed! Great job! 🎉"
-                  : "No tasks in this view."
-                }
-              </div>
-            ) : (
-              <SortableContext
-                items={filteredTasks.map((t) => t._id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {filteredTasks.map((t, index) => (
-                  <TaskCard
-                    key={t._id}
-                    task={t}
-                    onToggle={toggleComplete}
-                    onDelete={remove}
-                    isSelected={isTaskSelected(t._id)}
-                    onSelect={toggleTaskSelection}
-                    bulkMode={bulkMode}
-                  />
-                ))}
-              </SortableContext>
-            )}
+            {renderTasksView()}
           </div>
-        </DndContext>
+        )}
       </main>
       </div>
       
       {/* Screen reader only keyboard shortcuts help */}
-      <div className="sr-only" aria-label="Keyboard shortcuts">
+      <div className="sr-only" aria-label="Enhanced keyboard shortcuts">
         <h2>Keyboard Shortcuts</h2>
         <ul>
-          <li>Numbers 1-5: Switch between filters</li>
+          <li>Numbers 1-5: Switch between status filters</li>
           <li>Ctrl+F: Toggle focus mode</li>
-          <li>Ctrl+S: Toggle statistics</li>
+          <li>Ctrl+S: Toggle statistics panel</li>
           <li>Ctrl+N: Create new task</li>
+          <li>Ctrl+V: Cycle through view modes (List, Grid, Kanban, Timeline)</li>
+          <li>Ctrl+D: Cycle through display density (Comfortable, Compact, Minimal)</li>
           <li>Enter/Space on task: Toggle completion</li>
           <li>Ctrl+Delete on task: Delete task</li>
           <li>Ctrl+E on task: Edit task</li>
+          <li>Tab: Navigate between interface elements</li>
+          <li>Arrow keys: Navigate within lists and grids</li>
         </ul>
       </div>
     </>

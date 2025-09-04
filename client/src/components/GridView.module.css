@@ -1,0 +1,261 @@
+.gridContainer {
+  padding: 0;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  padding: 8px;
+}
+
+.gridItem {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  transition: transform 0.2s ease;
+}
+
+.gridItem:hover {
+  transform: translateY(-2px);
+}
+
+/* Density Variations */
+.densityComfortable {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.densityCompact {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.densityMinimal {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted);
+  min-height: 300px;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  color: var(--accent);
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--fg);
+}
+
+.emptyDescription {
+  font-size: 1rem;
+  max-width: 400px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.skeletonHeader::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.skeletonHeader::after {
+  content: '';
+  flex: 1;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.skeletonContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonLine {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skeletonActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.skeletonActions::before,
+.skeletonActions::after {
+  content: '';
+  width: 60px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .densityComfortable {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  
+  .densityCompact {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 4px;
+  }
+  
+  .densityComfortable,
+  .densityCompact,
+  .densityMinimal {
+    grid-template-columns: 1fr;
+  }
+  
+  .gridItem:hover {
+    transform: none;
+  }
+  
+  .emptyState {
+    padding: 60px 20px;
+  }
+  
+  .emptyIcon {
+    font-size: 3rem;
+  }
+  
+  .emptyTitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    padding: 2px;
+    gap: 8px;
+  }
+  
+  .emptyState {
+    padding: 40px 16px;
+    min-height: 250px;
+  }
+  
+  .emptyIcon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  
+  .emptyTitle {
+    font-size: 1.1rem;
+  }
+  
+  .emptyDescription {
+    font-size: 0.9rem;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .skeleton {
+    border-width: 2px;
+    border-color: var(--muted);
+  }
+  
+  .skeletonLine,
+  .skeletonActions::before,
+  .skeletonActions::after {
+    background: var(--muted);
+    opacity: 0.3;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .gridItem {
+    transition: none;
+  }
+  
+  .gridItem:hover {
+    transform: none;
+  }
+  
+  .skeleton::before {
+    animation: none;
+  }
+}

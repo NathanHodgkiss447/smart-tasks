@@ -1,0 +1,548 @@
+.focusMode {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.focusMode.active {
+  border-color: var(--accent);
+  box-shadow: 
+    0 6px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(110, 168, 254, 0.2);
+  background: rgba(110, 168, 254, 0.02);
+}
+
+.focusMode.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    var(--accent) 0%, 
+    #5a96e8 50%, 
+    var(--accent) 100%
+  );
+  animation: focusGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes focusGlow {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Focus Toggle */
+.focusToggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.toggleButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px 0;
+  text-align: left;
+  outline: none;
+  border-radius: 8px;
+}
+
+.toggleButton:hover {
+  color: var(--fg);
+}
+
+.toggleButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.toggleActive {
+  color: var(--accent);
+}
+
+.toggleActive:hover {
+  color: var(--accent);
+}
+
+.toggleIcon {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.toggleButton:hover .toggleIcon {
+  transform: scale(1.1);
+}
+
+.toggleLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.taskCount {
+  background: rgba(110, 168, 254, 0.1);
+  color: var(--accent);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid rgba(110, 168, 254, 0.3);
+  animation: countPulse 2s ease-in-out infinite;
+}
+
+@keyframes countPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.expandButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.expandButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.expandButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.expandIcon {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.expandIcon.expanded {
+  transform: rotate(45deg);
+}
+
+/* Focus Settings */
+.focusSettings {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.settingsExpanded {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.presetsSection,
+.settingsSection,
+.statsSection {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statsSection {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    transparent 100%
+  );
+}
+
+/* Presets */
+.presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.presetButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  padding: 16px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.presetButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(110, 168, 254, 0.1), 
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.presetButton:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.presetButton:hover::before {
+  left: 100%;
+}
+
+.presetButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.presetActive {
+  color: var(--accent);
+  background: rgba(110, 168, 254, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(110, 168, 254, 0.2);
+}
+
+.presetActive:hover {
+  color: var(--accent);
+  background: rgba(110, 168, 254, 0.15);
+  transform: translateY(-2px);
+}
+
+.presetIcon {
+  font-size: 24px;
+  transition: transform 0.2s ease;
+}
+
+.presetButton:hover .presetIcon {
+  transform: scale(1.1);
+}
+
+.presetLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Settings List */
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.settingItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.settingActive {
+  background: rgba(110, 168, 254, 0.08);
+  border-color: rgba(110, 168, 254, 0.2);
+  color: var(--accent);
+}
+
+.settingActive:hover {
+  background: rgba(110, 168, 254, 0.12);
+}
+
+.settingCheckbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.settingIcon {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.settingActive .settingIcon {
+  transform: scale(1.1);
+}
+
+.settingLabel {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.settingToggle {
+  font-size: 16px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.settingActive .settingToggle {
+  opacity: 1;
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+/* Stats */
+.statsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(110, 168, 254, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Global Focus Mode Styles */
+:global(.focus-mode) {
+  .task-actions {
+    opacity: 0.3;
+  }
+  
+  .task-metadata {
+    opacity: 0.7;
+  }
+  
+  .distractions {
+    filter: blur(2px);
+    opacity: 0.3;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .focusToggle {
+    padding: 12px 16px;
+  }
+  
+  .presetsSection,
+  .settingsSection,
+  .statsSection {
+    padding: 16px;
+  }
+  
+  .presets {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 6px;
+  }
+  
+  .presetButton {
+    padding: 12px 6px;
+  }
+  
+  .presetIcon {
+    font-size: 20px;
+  }
+  
+  .presetLabel {
+    font-size: 0.8rem;
+  }
+  
+  .settingItem {
+    padding: 10px;
+  }
+  
+  .settingLabel {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .focusToggle {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  
+  .toggleButton {
+    gap: 8px;
+  }
+  
+  .toggleIcon {
+    font-size: 18px;
+  }
+  
+  .toggleLabel {
+    font-size: 0.9rem;
+  }
+  
+  .taskCount {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+  }
+  
+  .expandButton {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .presetsSection,
+  .settingsSection,
+  .statsSection {
+    padding: 12px;
+  }
+  
+  .presets {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .presetButton {
+    padding: 8px 4px;
+    gap: 4px;
+  }
+  
+  .presetIcon {
+    font-size: 18px;
+  }
+  
+  .settingItem {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .settingIcon {
+    font-size: 16px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .focusMode.active {
+    border-width: 3px;
+    box-shadow: none;
+  }
+  
+  .presetActive,
+  .settingActive {
+    background: var(--accent);
+    color: var(--bg);
+    border-width: 2px;
+  }
+  
+  .statValue {
+    background: var(--accent);
+    color: var(--bg);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .focusMode,
+  .toggleButton,
+  .expandButton,
+  .presetButton,
+  .settingItem {
+    transition: none;
+  }
+  
+  .focusMode.active::before {
+    animation: none;
+  }
+  
+  .taskCount {
+    animation: none;
+  }
+  
+  .presetButton:hover,
+  .settingActive {
+    transform: none;
+  }
+  
+  .presetButton::before {
+    transition: none;
+  }
+}

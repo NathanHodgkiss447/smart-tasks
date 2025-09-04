@@ -278,6 +278,172 @@
   background: var(--accent);
 }
 
+/* View Mode Variations */
+.cardList {
+  /* Default list view - inherit base styles */
+}
+
+.cardGrid {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardGrid .cardHeader {
+  flex: 1;
+}
+
+.cardKanban {
+  margin-bottom: 8px;
+  min-height: 120px;
+}
+
+.cardTimeline {
+  position: relative;
+  margin-left: 40px;
+}
+
+.cardTimeline::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+/* Density Variations */
+.densityComfortable {
+  /* Default density - inherit base styles */
+}
+
+.densityCompact {
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.densityCompact .cardTitle {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.densityCompact .cardMeta {
+  margin-bottom: 8px;
+}
+
+.densityMinimal {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  min-height: 32px;
+}
+
+.densityMinimal .cardHeader {
+  margin-bottom: 0;
+  align-items: center;
+}
+
+.densityMinimal .cardTitle {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+/* Enhanced Title Styling */
+.titleText {
+  flex: 1;
+}
+
+.priorityIndicator {
+  font-size: 0.9em;
+  opacity: 0.8;
+  animation: subtleGlow 2s ease-in-out infinite;
+}
+
+@keyframes subtleGlow {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.dateIcon {
+  margin-right: 4px;
+  font-size: 0.9em;
+}
+
+/* Progress Bar */
+.progressContainer {
+  position: relative;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, #5a96e8 100%);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progressBar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progressShimmer 2s linear infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Enhanced Action Buttons */
+.actionIcon {
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.actionLabel {
+  font-weight: 600;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Quick Actions Enhancement */
+.quickComplete {
+  background: rgba(110, 254, 185, 0.2);
+  color: var(--ok);
+  border: 1px solid rgba(110, 254, 185, 0.3);
+}
+
+.quickDelete {
+  background: rgba(255, 107, 107, 0.2);
+  color: var(--danger);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
 /* Status Bar */
 .statusBar {
   position: absolute;

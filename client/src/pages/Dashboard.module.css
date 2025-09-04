@@ -1,0 +1,173 @@
+/* Enhanced Dashboard Styles */
+.dashboardControls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.viewControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.viewSwitcher {
+  flex: 1;
+  min-width: 320px;
+}
+
+.mainContent {
+  flex: 1;
+  min-height: 400px;
+  position: relative;
+}
+
+.tasksContainer {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tasksList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* State containers */
+.emptyState {
+  margin: 40px 0;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.errorState {
+  margin: 40px 0;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+/* Enhanced responsive design */
+@media (max-width: 1024px) {
+  .dashboardControls {
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .viewControls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .viewSwitcher {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardControls {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .viewControls {
+    gap: 12px;
+  }
+  
+  .tasksList {
+    gap: 8px;
+  }
+  
+  .emptyState,
+  .errorState {
+    margin: 20px 0;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardControls {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .viewControls {
+    gap: 8px;
+  }
+  
+  .tasksList {
+    gap: 6px;
+  }
+  
+  .emptyState,
+  .errorState {
+    margin: 16px 0;
+    border-radius: 8px;
+  }
+}
+
+/* Focus mode enhancements */
+:global(.focus-mode) .mainContent {
+  .tasksContainer {
+    filter: contrast(1.1) saturate(1.1);
+  }
+  
+  /* Hide distracting elements in focus mode */
+  .viewControls .actions {
+    opacity: 0.7;
+  }
+  
+  /* Enhance important elements */
+  .tasksList {
+    gap: 16px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .dashboardControls {
+    display: none;
+  }
+  
+  .viewControls {
+    display: none;
+  }
+  
+  .mainContent {
+    box-shadow: none;
+    border: none;
+  }
+  
+  .tasksList {
+    gap: 8px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .emptyState {
+    border-width: 2px;
+    border-color: var(--muted);
+  }
+  
+  .errorState {
+    border-width: 2px;
+    border-color: var(--danger);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tasksContainer {
+    transition: none;
+  }
+  
+  .mainContent {
+    transition: none;
+  }
+}
